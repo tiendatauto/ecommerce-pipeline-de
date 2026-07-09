@@ -1,12 +1,12 @@
 # Databricks notebook source
 # Helper functions for TheSportsDB API ingestion
 
-import json
 import time
 import urllib.parse
 
 import requests
 from pyspark.sql import functions as F
+from pyspark.sql import types as T
 
 
 def fetch_sportsdb_json(endpoint, params=None):
@@ -47,11 +47,10 @@ def extract_records(payload):
 
 
 def api_records_to_df(records, dataset_name, source_url):
-    json_rows = [json.dumps(record) for record in records]
-    if json_rows:
-        df = spark.read.json(sc.parallelize(json_rows))
+    if records:
+        df = spark.createDataFrame(records)
     else:
-        df = spark.read.json(sc.parallelize(["{}"])).limit(0)
+        df = spark.createDataFrame([], T.StructType([]))
 
     return (
         df.withColumn("ingestion_timestamp", F.current_timestamp())
