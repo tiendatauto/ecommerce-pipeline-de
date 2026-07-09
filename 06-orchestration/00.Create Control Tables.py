@@ -5,7 +5,7 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC Create the control table used by the API ingestion workflow.
+# MAGIC Create the control table used by the DummyJSON e-commerce API ingestion workflow.
 
 # COMMAND ----------
 
@@ -30,9 +30,9 @@ spark.sql(f"""
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC SELECT * FROM sportsdb_incr.control.batch_control;
+# MAGIC SELECT * FROM ecommerce_incr.control.batch_control;
 
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC DELETE FROM sportsdb_incr.control.batch_control;
+# MAGIC DELETE FROM ecommerce_incr.control.batch_control;

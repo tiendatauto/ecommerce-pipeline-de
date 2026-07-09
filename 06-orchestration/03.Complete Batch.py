@@ -5,7 +5,7 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC Mark the API batch as completed after all medallion tasks finish.
+# MAGIC Mark the e-commerce API batch as completed after all medallion tasks finish.
 
 # COMMAND ----------
 

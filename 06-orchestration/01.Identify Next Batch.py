@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # Identify Next API Batch
+# MAGIC # Identify Next E-Commerce API Batch
 
 # COMMAND ----------
 
@@ -33,7 +33,7 @@ else:
     next_batch = spark.sql("SELECT date_format(current_timestamp(), 'yyyyMMddHHmmss') AS batch_id").first().batch_id
     has_batch = "true"
 
-print(f"Next API batch to process: {next_batch}")
+print(f"Next e-commerce API batch to process: {next_batch}")
 
 dbutils.jobs.taskValues.set(key="p_batch_id", value=next_batch)
 dbutils.jobs.taskValues.set(key="has_batch", value=has_batch)

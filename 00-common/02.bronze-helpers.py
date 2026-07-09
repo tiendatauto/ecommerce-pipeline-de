@@ -1,5 +1,5 @@
 # Databricks notebook source
-# Helper functions for TheSportsDB API ingestion
+# Helper functions for DummyJSON API ingestion
 
 import time
 import urllib.parse
@@ -9,25 +9,17 @@ from pyspark.sql import functions as F
 from pyspark.sql import types as T
 
 
-def fetch_sportsdb_json(endpoint, params=None):
+def fetch_dummyjson_json(endpoint, params=None):
     encoded_endpoint = "/".join(
-        urllib.parse.quote(str(part).strip("/").replace(" ", "_"))
+        urllib.parse.quote(str(part).strip("/"))
         for part in endpoint.strip("/").split("/")
     )
-    url = f"{sportsdb_api_base_url}/{encoded_endpoint}"
-    response = requests.get(
-        url,
-        params=params,
-        timeout=60,
-    )
+    url = f"{dummyjson_api_base_url}/{encoded_endpoint}"
+    response = requests.get(url, params=params, timeout=60)
 
     if response.status_code == 429:
         time.sleep(65)
-        response = requests.get(
-            url,
-            params=params,
-            timeout=60,
-        )
+        response = requests.get(url, params=params, timeout=60)
 
     response.raise_for_status()
     return response.json(), response.url
@@ -39,7 +31,8 @@ def extract_records(payload):
     if isinstance(payload, list):
         return payload
     if isinstance(payload, dict):
-        for value in payload.values():
+        for key in ["products", "carts", "users", "categories"]:
+            value = payload.get(key)
             if isinstance(value, list):
                 return value
         return [payload]
@@ -60,23 +53,8 @@ def api_records_to_df(records, dataset_name, source_url):
 
 
 def fetch_endpoint_to_df(endpoint, dataset_name, params=None):
-    payload, source_url = fetch_sportsdb_json(endpoint, params=params)
+    payload, source_url = fetch_dummyjson_json(endpoint, params=params)
     return api_records_to_df(extract_records(payload), dataset_name, source_url)
-
-
-# COMMAND ----------
-
-
-def add_ingestion_metadata(df):
-    if "_metadata" in df.columns:
-        return (
-            df.withColumn("ingestion_timestamp", F.current_timestamp())
-              .withColumn("source_file", F.col("_metadata.file_path"))
-        )
-    return (
-        df.withColumn("ingestion_timestamp", F.current_timestamp())
-          .withColumn("source_file", F.lit(None).cast("string"))
-    )
 
 
 # COMMAND ----------

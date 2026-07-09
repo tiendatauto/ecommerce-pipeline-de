@@ -5,7 +5,7 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC Mark the generated API batch as in progress.
+# MAGIC Mark the generated e-commerce API batch as in progress.
 
 # COMMAND ----------
 

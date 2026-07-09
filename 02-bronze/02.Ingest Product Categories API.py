@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # Ingest Leagues From TheSportsDB API
+# MAGIC # Ingest Product Categories From DummyJSON API
 
 # COMMAND ----------
 
@@ -17,23 +17,23 @@ v_batch_id = dbutils.widgets.get("p_batch_id")
 
 # COMMAND ----------
 
-table_name = f"{catalog_name}.{bronze_schema}.leagues"
+table_name = f"{catalog_name}.{bronze_schema}.product_categories"
 
 # COMMAND ----------
 
-leagues_df = fetch_endpoint_to_df(
-    endpoint="all_leagues.php",
-    dataset_name="leagues"
+categories_df = fetch_endpoint_to_df(
+    endpoint="products/categories",
+    dataset_name="product_categories"
 )
 
 # COMMAND ----------
 
-display(leagues_df)
+display(categories_df)
 
 # COMMAND ----------
 
 write_to_bronze(
-    input_df=leagues_df,
+    input_df=categories_df,
     target_table=table_name,
     batch_id=v_batch_id
 )

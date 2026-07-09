@@ -4,12 +4,12 @@
 
 -- COMMAND ----------
 
-CREATE SCHEMA IF NOT EXISTS sportsdb_incr.control
-    MANAGED LOCATION 'abfss://sportsdb-incr@databricksporttdl.dfs.core.windows.net/control';
+CREATE SCHEMA IF NOT EXISTS ecommerce_incr.control
+    MANAGED LOCATION 'abfss://ecommerce-incr@databricksporttdl.dfs.core.windows.net/control';
 
 -- COMMAND ----------
 
-CREATE TABLE IF NOT EXISTS sportsdb_incr.control.batch_control
+CREATE TABLE IF NOT EXISTS ecommerce_incr.control.batch_control
 (
     batch_id STRING,
     status STRING,
@@ -19,4 +19,4 @@ CREATE TABLE IF NOT EXISTS sportsdb_incr.control.batch_control
 
 -- COMMAND ----------
 
-SELECT * FROM sportsdb_incr.control.batch_control;
+SELECT * FROM ecommerce_incr.control.batch_control;

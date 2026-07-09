@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # Ingest Sports From TheSportsDB API
+# MAGIC # Ingest Carts From DummyJSON API
 
 # COMMAND ----------
 
@@ -17,23 +17,24 @@ v_batch_id = dbutils.widgets.get("p_batch_id")
 
 # COMMAND ----------
 
-table_name = f"{catalog_name}.{bronze_schema}.sports"
+table_name = f"{catalog_name}.{bronze_schema}.carts"
 
 # COMMAND ----------
 
-sports_df = fetch_endpoint_to_df(
-    endpoint="all_sports.php",
-    dataset_name="sports"
+carts_df = fetch_endpoint_to_df(
+    endpoint="carts",
+    dataset_name="carts",
+    params={"limit": dummyjson_default_limit}
 )
 
 # COMMAND ----------
 
-display(sports_df)
+display(carts_df)
 
 # COMMAND ----------
 
 write_to_bronze(
-    input_df=sports_df,
+    input_df=carts_df,
     target_table=table_name,
     batch_id=v_batch_id
 )
