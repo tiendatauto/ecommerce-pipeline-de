@@ -6,7 +6,7 @@
 
 CREATE EXTERNAL LOCATION IF NOT EXISTS databricks_sport_tdl_ecommerce_incr
 URL 'abfss://ecommerce-incr@databricksporttdl.dfs.core.windows.net/'
-WITH (STORAGE CREDENTIAL `databricks-sport-sc`)
+WITH (STORAGE CREDENTIAL `databricks-course-sc`)
 COMMENT 'External location for DummyJSON e-commerce incremental project';
 
 -- COMMAND ----------
