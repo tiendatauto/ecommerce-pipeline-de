@@ -63,6 +63,13 @@ products_final_df = (
     .withColumn("product_name", F.initcap("product_name"))
     .withColumn("category_slug", F.lower("category_slug"))
     .withColumn(
+        "brand_name",
+        F.when(
+            F.col("brand_name").isNull() | (F.trim(F.col("brand_name")) == ""),
+            F.lit("other")
+        ).otherwise(F.col("brand_name"))
+    )
+    .withColumn(
         "inventory_risk",
         F.when(F.col("stock_quantity") <= 10, F.lit("LOW_STOCK"))
          .when(F.col("stock_quantity") <= 50, F.lit("WATCH"))
