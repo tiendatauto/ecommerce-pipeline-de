@@ -1,13 +1,19 @@
 # Databricks notebook source
 # Helper functions for DummyJSON API ingestion
 
-import json
 import time
 import urllib.parse
 
 import requests
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
+
+
+# COMMAND ----------
+
+# MAGIC %run ./05.api-schema-helpers
+
+# COMMAND ----------
 
 
 def fetch_dummyjson_json(endpoint, params=None):
@@ -42,8 +48,9 @@ def extract_records(payload):
 
 def api_records_to_df(records, dataset_name, source_url):
     if records:
-        json_rows = [json.dumps(record) for record in records]
-        df = spark.read.json(spark.sparkContext.parallelize(json_rows))
+        schema = infer_records_schema(records)
+        normalized_records = [normalize_record(record, schema) for record in records]
+        df = spark.createDataFrame(normalized_records, schema)
     else:
         df = spark.createDataFrame([], T.StructType([]))
 
