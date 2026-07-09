@@ -17,8 +17,8 @@ control_table = f"{catalog_name}.{control_schema}.batch_control"
 
 # COMMAND ----------
 
-dbutils.widgets.text("p_batch_id", "")
-v_batch_id = dbutils.widgets.get("p_batch_id")
+from datetime import datetime
+v_batch_id = datetime.now().strftime("%Y-%m-%d")
 
 # COMMAND ----------
 
