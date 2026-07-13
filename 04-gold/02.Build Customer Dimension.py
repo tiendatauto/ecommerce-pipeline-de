@@ -4,8 +4,11 @@
 
 # COMMAND ----------
 
-from datetime import datetime
-v_batch_id = datetime.now().strftime("%Y-%m-%d")
+# MAGIC %run ../00-common/06.batch-helpers
+
+# COMMAND ----------
+
+v_batch_id = get_batch_id()
 
 # COMMAND ----------
 
