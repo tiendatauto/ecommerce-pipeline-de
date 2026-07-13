@@ -26,10 +26,11 @@ Set `p_batch_id` on `Create New Batch`, all three phase tasks, and
 `Complete Batch` to the `p_batch_id` task value produced by
 `Identify Next Batch`.
 
-The ingestion runner owns the internal dependency order. It ingests the four API
-datasets first, then extracts cart items and product reviews from their parent
-Bronze datasets. The transformation runner invokes all six Silver transforms.
-The Gold runner builds dimensions before the sales and product-review facts.
+The ingestion runner starts all four API ingests concurrently. Cart-item
+extraction waits only for carts, while product-review extraction waits only for
+products. The transformation runner starts all six Silver transforms
+concurrently. The Gold runner builds all dimensions concurrently; each fact
+waits only for the dimensions it joins.
 Any child failure raises through `dbutils.notebook.run`, so the phase task fails
 and the workflow does not advance to the next phase.
 

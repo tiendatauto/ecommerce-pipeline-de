@@ -14,22 +14,45 @@ v_batch_id = get_batch_id()
 
 # COMMAND ----------
 
-ingestion_notebooks = [
-    "./01.Ingest Products API",
-    "./02.Ingest Product Categories API",
-    "./03.Ingest Users API",
-    "./04.Ingest Carts API",
-    # These two notebooks depend on the products and carts Bronze tables above.
-    "./05.Extract Cart Items",
-    "./06.Extract Product Reviews",
-]
+from concurrent.futures import ThreadPoolExecutor
 
-for notebook_path in ingestion_notebooks:
+
+def run_notebook(notebook_path):
     print(f"Running {notebook_path} for batch {v_batch_id}")
-    dbutils.notebook.run(
+    return dbutils.notebook.run(
         notebook_path,
         0,
         {"p_batch_id": v_batch_id},
     )
+
+
+def run_notebook_after(notebook_path, upstream_future):
+    upstream_future.result()
+    return run_notebook(notebook_path)
+
+
+with ThreadPoolExecutor(max_workers=6) as executor:
+    products_future = executor.submit(run_notebook, "./01.Ingest Products API")
+    categories_future = executor.submit(run_notebook, "./02.Ingest Product Categories API")
+    users_future = executor.submit(run_notebook, "./03.Ingest Users API")
+    carts_future = executor.submit(run_notebook, "./04.Ingest Carts API")
+
+    cart_items_future = executor.submit(
+        run_notebook_after,
+        "./05.Extract Cart Items",
+        carts_future,
+    )
+    product_reviews_future = executor.submit(
+        run_notebook_after,
+        "./06.Extract Product Reviews",
+        products_future,
+    )
+
+    products_future.result()
+    categories_future.result()
+    users_future.result()
+    carts_future.result()
+    cart_items_future.result()
+    product_reviews_future.result()
 
 print(f"Bronze ingestion pipeline completed for batch {v_batch_id}")
